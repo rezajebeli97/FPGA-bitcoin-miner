@@ -18,3 +18,12 @@ bool *crypto::toBinary(int value) {
     return bin;
 }
 
+bool* crypto::toBinary64(int value){
+    bool bin[64];
+    for(int i = 63; i >= 0; i--){
+        bin[i] = value % 2;
+        value /= 2;
+    }
+    return bin;
+}
+

@@ -10,6 +10,7 @@ class crypto {
 public:
     crypto();
     bool* toBinary(int value);
+    bool* toBinary64(int value);
 };
 
 
