@@ -27,3 +27,29 @@ bool* crypto::toBinary64(int value){
     return bin;
 }
 
+bool* crypto::ROT(bool x[32] , int n){
+    bool output[32];
+    for(int i = 0; i < 32; i++){
+        output[i] = 1;
+    }
+    return output;
+}
+
+bool* crypto::SHF(bool x[32] , int n){
+    bool output[32];
+    for(int i = 0 ; i < n ; i++){
+        output[i]=0;
+    }
+    for(int i = n ; i < 32 ; i++){
+        output[i] = x[(i-n)%32];
+    }
+    return output;
+}
+
+//bool* crypto::ro0(bool x[32]){
+//    return xOr( ROT(x,17) , ROT(x,14) , SHF(x,12) );
+//}
+//
+//bool* crypto::ro1(bool x[32]){
+//    return xOr( ROT(x,9) , ROT(x,19) , SHF(x,9) );
+//}

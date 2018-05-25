@@ -3,7 +3,7 @@
 
 using namespace std;
 
-int main() {
+int main() {/*
     string s = "";
     cin >> s;
     bool input [10000];
@@ -34,6 +34,15 @@ int main() {
 
     for (int i = 0; i < 512; i++) {
         cout << input[i];
+    }*/
+
+    bool tmp1[32] = {1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1};
+    bool *tmp2 = crypto().ROT(tmp1 , 4);
+
+    for(int i = 0; i < 32; i++)
+    {
+        cout << tmp2[i];
     }
+
     return 0;
 }

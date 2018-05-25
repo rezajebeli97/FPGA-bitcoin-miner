@@ -11,6 +11,10 @@ public:
     crypto();
     bool* toBinary(int value);
     bool* toBinary64(int value);
+    bool* ROT(bool x[32] , int n);
+    bool* SHF(bool x[32] , int n);
+    bool* ro0(bool x[32]);
+    bool* ro1(bool x[32]);
 };
 
 
