@@ -13,11 +13,15 @@ class crypto {
 public:
     crypto();
     void toBinary(int value, bool output[8]);
+    void toBinary32(int value, bool output[32]);
     void toBinary64(int value, bool output[64]);
     int pars(string s);
     void xOr(bool var1[32], bool var2[32], bool var3[32], bool output[32]);
     void add(bool var1[32], bool var2[32] , bool output[32]);
+    void sub(bool var1[32], bool var2[32] , bool output[32]);
+    void add3(bool var1[32], bool var2[32],bool var3[32], bool output[32]);
     void add4(bool var1[32], bool var2[32],bool var3[32], bool var4[32] , bool output[32]);
+    void add5(bool var1[32], bool var2[32],bool var3[32], bool var4[32] , bool var5[32] , bool output[32]);
     bool input [10000];
     void ROT(bool x[32] , int n , bool output[32]);
     void SHF(bool x[32] , int n , bool output[32]);
@@ -27,6 +31,7 @@ public:
     void permutation(bool x[32] , bool output[32]);
     void nOt(bool var1[32], bool output[32]);
     void aNd(bool var1[32], bool var2[32], bool output[32]);
+    void SHA256(int length , bool output[256]);
 };
 
 
