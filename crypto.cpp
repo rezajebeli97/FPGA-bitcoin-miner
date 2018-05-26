@@ -9,6 +9,72 @@ crypto::crypto() {
     for (int i = 0; i < 10000; i++) {
         input[i] = false;
     }
+    bool out[32];
+    toBinary32(0x428a2f98, K[0]);
+    toBinary32(0x71374491, K[1]);
+    toBinary32(0xb5c0fbcf, K[2]);
+    toBinary32(0xe9b5dba5, K[3]);
+    toBinary32(0x3956c25b, K[4]);
+    toBinary32(0x59f111f1, K[5]);
+    toBinary32(0x923f82a4, K[6]);
+    toBinary32(0xab1c5ed5, K[7]);
+    toBinary32(0xd807aa98, K[8]);
+    toBinary32(0x12835b01, K[9]);
+    toBinary32(0x243185be, K[10]);
+    toBinary32(0x550c7dc3, K[11]);
+    toBinary32(0x72be5d74, K[12]);
+    toBinary32(0x80deb1fe, K[13]);
+    toBinary32(0x9bdc06a7, K[14]);
+    toBinary32(0xc19bf174, K[15]);
+    toBinary32(0xe49b69c1, K[16]);
+    toBinary32(0xefbe4786, K[17]);
+    toBinary32(0x0fc19dc6, K[18]);
+    toBinary32(0x240ca1cc, K[19]);
+    toBinary32(0x2de92c6f, K[20]);
+    toBinary32(0x4a7484aa, K[21]);
+    toBinary32(0x5cb0a9dc, K[22]);
+    toBinary32(0x76f988da, K[23]);
+    toBinary32(0x983e5152, K[24]);
+    toBinary32(0xa831c66d, K[25]);
+    toBinary32(0xb00327c8, K[26]);
+    toBinary32(0xbf597fc7, K[27]);
+    toBinary32(0xc6e00bf3, K[28]);
+    toBinary32(0xd5a79147, K[29]);
+    toBinary32(0x06ca6351, K[30]);
+    toBinary32(0x14292967, K[31]);
+    toBinary32(0x27b70a85, K[32]);
+    toBinary32(0x2e1b2138, K[33]);
+    toBinary32(0x4d2c6dfc, K[34]);
+    toBinary32(0x53380d13, K[35]);
+    toBinary32(0x650a7354, K[36]);
+    toBinary32(0x766a0abb, K[37]);
+    toBinary32(0x81c2c92e, K[38]);
+    toBinary32(0x92722c85, K[39]);
+    toBinary32(0xa2bfe8a1, K[40]);
+    toBinary32(0xa81a664b, K[41]);
+    toBinary32(0xc24b8b70, K[42]);
+    toBinary32(0xc76c51a3, K[43]);
+    toBinary32(0xd192e819, K[44]);
+    toBinary32(0xd6990624, K[45]);
+    toBinary32(0xf40e3585, K[46]);
+    toBinary32(0x106aa070, K[47]);
+    toBinary32(0x19a4c116, K[48]);
+    toBinary32(0x1e376c08, K[49]);
+    toBinary32(0x2748774c, K[50]);
+    toBinary32(0x34b0bcb5, K[51]);
+    toBinary32(0x391c0cb3, K[52]);
+    toBinary32(0x4ed8aa4a, K[53]);
+    toBinary32(0x5b9cca4f, K[54]);
+    toBinary32(0x682e6ff3, K[55]);
+    toBinary32(0x748f82ee, K[56]);
+    toBinary32(0x78a5636f, K[57]);
+    toBinary32(0x84c87814, K[58]);
+    toBinary32(0x8cc70208, K[59]);
+    toBinary32(0x90befffa, K[60]);
+    toBinary32(0xa4506ceb, K[61]);
+    toBinary32(0xbe49a3f7, K[62]);
+    toBinary32(0xc67178f2, K[63]);
+
 }
 
 void crypto::toBinary(int value, bool output[8]) {
@@ -19,7 +85,15 @@ void crypto::toBinary(int value, bool output[8]) {
     return;
 }
 
-void crypto::toBinary64(int value, bool output[64]){
+void crypto::toBinary32(int64_t value, bool output[32]){
+    for(int i = 31; i >= 0; i--){
+        output[i] = value % 2;
+        value /= 2;
+    }
+    return;
+}
+
+void crypto::toBinary64(int64_t value, bool output[64]){
     for(int i = 63; i >= 0; i--){
         output[i] = value % 2;
         value /= 2;
@@ -61,6 +135,13 @@ int crypto::pars(string s) {
 void crypto::xOr(bool *var1, bool *var2, bool *var3, bool output[32]) {
     for (int i = 0; i < 32; i++) {
         output[i] = var1[i] xor var2[i] xor var3[i];
+    }
+    return;
+}
+
+void crypto::xOr4(bool *var1, bool *var2, bool *var3, bool *var4, bool *output) {
+    for (int i = 0; i < 32; i++) {
+        output[i] = var1[i] xor var2[i] xor var3[i] xor var4[i];
     }
     return;
 }
@@ -168,4 +249,51 @@ void crypto::permutation(bool *x, bool *output) {
         output[i] = x[32-i];
     }
 }
+
+void crypto::Ch(bool x[32], bool y[32], bool z[32], bool output[32]) {
+    bool out1[32], out2[32], out3[32], yNot[32], xNot[32];
+    aNd(x, y, out1);
+    nOt(y,yNot);
+    aNd(yNot, z, out2);
+    nOt(x, xNot);
+    aNd(xNot, z, out3);
+    xOr(out1, out2, out3, output);
+}
+
+void crypto::Maj(bool x[32], bool y[32], bool z[32], bool output[32]) {
+    bool out1[32], out2[32], out3[32];
+    aNd(x, z, out1);
+    aNd(x, y, out2);
+    aNd(y, z, out3);
+    xOr(out1, out2, out3, output);
+}
+
+void crypto::sigma0(bool *var, bool *output) {
+    bool out1[32], out2[32], out3[32], out4[32];
+    ROT(var, 2, out1);
+    ROT(var, 13, out2);
+    ROT(var, 22, out3);
+    SHF(var, 7, out4);
+    xOr4(out1, out2, out3, out4, output);
+}
+
+void crypto::sigma1(bool *var, bool *output) {
+    bool out1[32], out2[32], out3[32];
+    ROT(var, 6, out1);
+    ROT(var, 11, out2);
+    ROT(var, 25, out3);
+    xOr(out1, out2, out3, output);
+}
+
+void crypto::sigma2(bool *var, bool *output) {
+    bool out1[32], out2[32], out3[32], out4[32];
+    ROT(var, 2, out1);
+    ROT(var, 3, out2);
+    ROT(var, 15, out3);
+    SHF(var, 5, out4);
+    xOr4(out1, out2, out3, out4, output);
+}
+
+
+
 
