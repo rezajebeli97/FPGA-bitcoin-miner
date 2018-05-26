@@ -12,7 +12,7 @@ crypto::crypto() {
 }
 
 bool *crypto::toBinary(int value) {
-    bool bin[8];
+    static bool bin[8];
     for(int i = 7; i >= 0; i--){
         bin[i] = value % 2;
         value /= 2;
@@ -21,7 +21,7 @@ bool *crypto::toBinary(int value) {
 }
 
 bool* crypto::toBinary64(int value){
-    bool bin[64];
+    static bool bin[64];
     for(int i = 63; i >= 0; i--){
         bin[i] = value % 2;
         value /= 2;
@@ -66,26 +66,34 @@ bool *crypto::xOr(bool *var1, bool *var2, bool *var3) {
     return temp;
 }
 
-bool *crypto::add(bool var1[32], bool var2[32]) {
-    static bool temp [32];
+void crypto::add(bool var1[32], bool var2[32] , bool output[32]) {
     bool carry = false;
     for (int i = 31; i >= 0; i--) {
-        temp[i] = var1[i] xor var2[i] xor carry;
+        output[i] = var1[i] xor var2[i] xor carry;
         carry = (carry and (var1[i] or var2[i])) or (var1[i] and var2[i]);
     }
-    return temp;
+    return ;
+}
+
+void crypto::add4(bool *var1, bool *var2, bool *var3, bool *var4 , bool output[32]) {
+    bool tmp1[32];
+    add(var1 , var2 , tmp1);
+    bool tmp2[32];
+    add(var3 , var4 , tmp2);
+    add ( tmp1 , tmp2 , output);
+    return;
 }
 
 bool* crypto::ROT(bool x[32] , int n){
-    bool output[32];
+    static bool output[32];
     for(int i = 0; i < 32; i++){
-        output[i] = 1;
+        output[i] = x[(32+(i-n)%32)%32];
     }
     return output;
 }
 
 bool* crypto::SHF(bool x[32] , int n){
-    bool output[32];
+    static bool output[32];
     for(int i = 0 ; i < n ; i++){
         output[i]=0;
     }
@@ -95,10 +103,32 @@ bool* crypto::SHF(bool x[32] , int n){
     return output;
 }
 
-//bool* crypto::ro0(bool x[32]){
-//    return xOr( ROT(x,17) , ROT(x,14) , SHF(x,12) );
-//}
-//
-//bool* crypto::ro1(bool x[32]){
-//    return xOr( ROT(x,9) , ROT(x,19) , SHF(x,9) );
-//}
+bool* crypto::ro0(bool x[32]){
+    return xOr( ROT(x,17) , ROT(x,14) , SHF(x,12) );
+}
+
+bool* crypto::ro1(bool x[32]){
+    return xOr( ROT(x,9) , ROT(x,19) , SHF(x,9) );
+}
+
+bool **crypto::w(bool x[512]) {
+    bool **wArray = 0;
+    wArray = new bool*[64];
+    for (int i = 0; i < 64; ++i) {
+        wArray[i] = new bool [32];
+    }
+
+    for (int i = 0; i < 16; i++) {
+        for (int j = 0; j < 32; j++) {
+            wArray[i][j] = x[i*32 +j];
+        }
+    }
+
+    for (int i = 16; i < 64; i++) {
+
+    }
+
+    return static_cast<bool **>(wArray);
+}
+
+
