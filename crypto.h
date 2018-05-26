@@ -23,7 +23,10 @@ public:
     void SHF(bool x[32] , int n , bool output[32]);
     void ro0(bool x[32] , bool output[32]);
     void ro1(bool x[32] , bool output[32]);
-    bool** w(bool x[512]);
+    void w(bool x[512] , bool output[64][32]);
+    void permutation(bool x[32] , bool output[32]);
+    void nOt(bool var1[32], bool output[32]);
+    void aNd(bool var1[32], bool var2[32], bool output[32]);
 };
 
 

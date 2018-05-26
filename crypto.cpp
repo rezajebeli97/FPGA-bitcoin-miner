@@ -65,6 +65,20 @@ void crypto::xOr(bool *var1, bool *var2, bool *var3, bool output[32]) {
     return;
 }
 
+void crypto::aNd(bool *var1, bool *var2, bool *output) {
+    for (int i = 0; i <32 ; i++) {
+        output[i] = var1[i] and var2[i];
+    }
+    return;
+}
+
+void crypto::nOt(bool *var1, bool *output) {
+    for (int i = 0; i <32 ; i++) {
+        output[i] = not var1[i];
+    }
+    return;
+}
+
 void crypto::add(bool var1[32], bool var2[32] , bool output[32]) {
     bool carry = false;
     for (int i = 31; i >= 0; i--) {
@@ -108,6 +122,7 @@ void crypto::ro0(bool x[32] , bool output[32]){
     bool output3[32];
     SHF(x,12 , output3);
     xOr( output1 , output2 , output3 , output);
+    return;
 }
 
 void crypto::ro1(bool x[32] , bool output[32]){
@@ -120,22 +135,37 @@ void crypto::ro1(bool x[32] , bool output[32]){
     xOr( output1 , output2 , output3 , output);
 }
 
-bool **crypto::w(bool x[512]) {
-    bool **wArray = 0;
-    wArray = new bool*[64];
-    for (int i = 0; i < 64; ++i) {
-        wArray[i] = new bool [32];
-    }
+void crypto::w(bool x[512] , bool output[64][32]) {
 
     for (int i = 0; i < 16; i++) {
         for (int j = 0; j < 32; j++) {
-            wArray[i][j] = x[i*32 +j];
+            output[i][j] = x[i*32 +j];
         }
     }
 
     for (int i = 16; i < 64; i++) {
-
+        bool output1[32],output2[32];
+        ro1(output[i-1] , output1);
+        ro0(output[i-12] , output2);
+        add4(output1 , output[i-6] , output2 , output[i-15] , output[i]);
+        bool output3[32];
+        permutation(output[i] , output3);
+        for (int j = 0; j < 32; j++) {
+            output[i][j] = output3[j];
+        }
     }
-
-    return static_cast<bool **>(wArray);
+    return ;
 }
+
+void crypto::permutation(bool *x, bool *output) {
+    for (int i = 0; i < 7; i++) {
+        output[i] = x[32-i];
+    }
+    for (int i = 8; i < 15; i++) {
+        output[i] = x[i+8];
+    }
+    for (int i = 16; i < 31; i++) {
+        output[i] = x[32-i];
+    }
+}
+
