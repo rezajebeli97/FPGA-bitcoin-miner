@@ -19,10 +19,10 @@ public:
     void add(bool var1[32], bool var2[32] , bool output[32]);
     void add4(bool var1[32], bool var2[32],bool var3[32], bool var4[32] , bool output[32]);
     bool input [10000];
-    bool* ROT(bool x[32] , int n);
-    bool* SHF(bool x[32] , int n);
-    bool* ro0(bool x[32]);
-    bool* ro1(bool x[32]);
+    void ROT(bool x[32] , int n , bool output[32]);
+    void SHF(bool x[32] , int n , bool output[32]);
+    bool* ro0(bool x[32] , bool output[32]);
+    bool* ro1(bool x[32] , bool output[32]);
     bool** w(bool x[512]);
 };
 

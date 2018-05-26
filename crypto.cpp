@@ -83,31 +83,41 @@ void crypto::add4(bool *var1, bool *var2, bool *var3, bool *var4 , bool output[3
     return;
 }
 
-bool* crypto::ROT(bool x[32] , int n){
-    static bool output[32];
+void crypto::ROT(bool x[32] , int n , bool output[32]){
     for(int i = 0; i < 32; i++){
         output[i] = x[(32+(i-n)%32)%32];
     }
-    return output;
+    return ;
 }
 
-bool* crypto::SHF(bool x[32] , int n){
-    static bool output[32];
+void crypto::SHF(bool x[32] , int n , bool output[32]){
     for(int i = 0 ; i < n ; i++){
         output[i]=0;
     }
     for(int i = n ; i < 32 ; i++){
         output[i] = x[(i-n)%32];
     }
-    return output;
+    return ;
 }
 
-bool* crypto::ro0(bool x[32]){
-    return xOr( ROT(x,17) , ROT(x,14) , SHF(x,12) );
+bool* crypto::ro0(bool x[32] , bool output[32]){
+    bool output1[32];
+    ROT(x,17 , output1);
+    bool output2[32];
+    ROT(x,14 , output2);
+    bool output3[32];
+    SHF(x,12 , output3);
+    xOr( output1 , output2 , output3 , output);
 }
 
-bool* crypto::ro1(bool x[32]){
-    return xOr( ROT(x,9) , ROT(x,19) , SHF(x,9) );
+bool* crypto::ro1(bool x[32] , bool output[32]){
+    bool output1[32];
+    ROT(x,9 , output1);
+    bool output2[32];
+    ROT(x,19 , output2);
+    bool output3[32];
+    SHF(x,9 , output3);
+    xOr( output1 , output2 , output3 , output);
 }
 
 bool **crypto::w(bool x[512]) {
@@ -129,5 +139,3 @@ bool **crypto::w(bool x[512]) {
 
     return static_cast<bool **>(wArray);
 }
-
-
