@@ -11,7 +11,7 @@ crypto::crypto() {
     }
 }
 
-bool *crypto::toBinary(int value, bool output[8]) {
+void crypto::toBinary(int value, bool output[8]) {
     for(int i = 7; i >= 0; i--){
         output[i] = value % 2;
         value /= 2;
@@ -19,12 +19,12 @@ bool *crypto::toBinary(int value, bool output[8]) {
     return;
 }
 
-bool* crypto::toBinary64(int value, bool output[64]){
+void crypto::toBinary64(int value, bool output[64]){
     for(int i = 63; i >= 0; i--){
         output[i] = value % 2;
         value /= 2;
     }
-    return output;
+    return;
 }
 
 int crypto::pars(string s) {
@@ -58,7 +58,7 @@ int crypto::pars(string s) {
 
 }
 
-bool *crypto::xOr(bool *var1, bool *var2, bool *var3, bool output[32]) {
+void crypto::xOr(bool *var1, bool *var2, bool *var3, bool output[32]) {
     for (int i = 0; i < 32; i++) {
         output[i] = var1[i] xor var2[i] xor var3[i];
     }
@@ -100,7 +100,7 @@ void crypto::SHF(bool x[32] , int n , bool output[32]){
     return ;
 }
 
-bool* crypto::ro0(bool x[32] , bool output[32]){
+void crypto::ro0(bool x[32] , bool output[32]){
     bool output1[32];
     ROT(x,17 , output1);
     bool output2[32];
@@ -110,7 +110,7 @@ bool* crypto::ro0(bool x[32] , bool output[32]){
     xOr( output1 , output2 , output3 , output);
 }
 
-bool* crypto::ro1(bool x[32] , bool output[32]){
+void crypto::ro1(bool x[32] , bool output[32]){
     bool output1[32];
     ROT(x,9 , output1);
     bool output2[32];
