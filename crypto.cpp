@@ -11,22 +11,20 @@ crypto::crypto() {
     }
 }
 
-bool *crypto::toBinary(int value) {
-    static bool bin[8];
+bool *crypto::toBinary(int value, bool output[8]) {
     for(int i = 7; i >= 0; i--){
-        bin[i] = value % 2;
+        output[i] = value % 2;
         value /= 2;
     }
-    return bin;
+    return;
 }
 
-bool* crypto::toBinary64(int value){
-    static bool bin[64];
+bool* crypto::toBinary64(int value, bool output[64]){
     for(int i = 63; i >= 0; i--){
-        bin[i] = value % 2;
+        output[i] = value % 2;
         value /= 2;
     }
-    return bin;
+    return output;
 }
 
 int crypto::pars(string s) {
@@ -34,7 +32,8 @@ int crypto::pars(string s) {
     int currentIndex = 0;
     for(int i = 0; i < s.length(); i++)
     {
-        bool *temp  = crypto().toBinary(int(s.at(i)));
+        bool temp [8];
+        toBinary(int(s.at(i)), temp);
 
         for(int j = 0; j < 8; j++)
         {
@@ -48,7 +47,8 @@ int crypto::pars(string s) {
     input[currentIndex] = true;
     currentIndex += k + 1;
 
-    bool *temp = crypto().toBinary64(s.length()*8);
+    bool temp [64];
+    toBinary64(s.length()*8, temp);
     for (int i = currentIndex; i < currentIndex + 64; i++) {
         input[i] = temp[i - currentIndex];
     }
@@ -58,12 +58,11 @@ int crypto::pars(string s) {
 
 }
 
-bool *crypto::xOr(bool *var1, bool *var2, bool *var3) {
-    static bool * temp;
+bool *crypto::xOr(bool *var1, bool *var2, bool *var3, bool output[32]) {
     for (int i = 0; i < 32; i++) {
-        temp[i] = var1[i] xor var2[i] xor var3[i];
+        output[i] = var1[i] xor var2[i] xor var3[i];
     }
-    return temp;
+    return;
 }
 
 void crypto::add(bool var1[32], bool var2[32] , bool output[32]) {
