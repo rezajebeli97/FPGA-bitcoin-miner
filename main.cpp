@@ -6,34 +6,18 @@ using namespace std;
 int main() {
     string s = "";
     cin >> s;
-    bool input [10000];
-    for (int i = 0; i < 10000; i++) {
-        input[i] = false;
-    }
-    int currentIndex = 0;
-    for(int i = 0; i < s.length(); i++)
-    {
-        bool *temp  = crypto().toBinary(int(s.at(i)));
+    crypto cryp;
+    int totalLength = cryp.pars(s);
 
-        for(int j = 0; j < 8; j++)
-        {
-            input[i*8 + j] = temp[j];
-        }
+    for (int i = 0; i < totalLength; i++) {
+//        cout << cryp.input[i];
     }
-    currentIndex = s.length()*8;
-    int k = 448 - ((currentIndex + 1)%512);
-    if(k < 0)
-        k += 512;
-    input[currentIndex] = true;
-    currentIndex += k + 1;
-
-    bool *temp = crypto().toBinary64(s.length()*8);
-    for (int i = currentIndex; i < currentIndex + 64; i++) {
-        input[i] = temp[i - currentIndex];
-    }
-
-    for (int i = 0; i < 512; i++) {
-        cout << input[i];
+    bool temp1 [32] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1};
+    bool temp2 [32] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0};
+    bool *temp3 = cryp.add(temp1, temp2);
+    cout << "hello";
+    for (int j = 0; j < 32; j++) {
+        cout << temp3[j];
     }
     return 0;
 }
