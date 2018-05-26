@@ -169,6 +169,24 @@ void crypto::add(bool var1[32], bool var2[32] , bool output[32]) {
     return ;
 }
 
+void crypto::sub(bool *var1, bool *var2, bool *output) {
+    bool onesComp_var2[32];
+    nOt(var2 , onesComp_var2);
+    bool one[32];
+    for (int i = 0; i < 31 ; i++) {
+        one[i] = 0;
+    }
+    one[31] = 1;
+
+    add3(var1 , onesComp_var2 , one , output);
+}
+
+void crypto::add3(bool *var1, bool *var2, bool *var3, bool *output) {
+    bool tmp1[32];
+    add(var1 , var2 , tmp1);
+    add(tmp1 , var3 , output);
+}
+
 void crypto::add4(bool *var1, bool *var2, bool *var3, bool *var4 , bool output[32]) {
     bool tmp1[32];
     add(var1 , var2 , tmp1);
@@ -177,6 +195,18 @@ void crypto::add4(bool *var1, bool *var2, bool *var3, bool *var4 , bool output[3
     add ( tmp1 , tmp2 , output);
     return;
 }
+
+void crypto::add5(bool *var1, bool *var2, bool *var3, bool *var4, bool *var5, bool *output) {
+    bool tmp1[32];
+    add(var1 , var2 , tmp1);
+    bool tmp2[32];
+    add(tmp1 , var3 , tmp2);
+    bool tmp3[32];
+    add(tmp2 , var4 , tmp3);
+    add(tmp3 , var5 , output);
+    return;
+}
+
 
 void crypto::ROT(bool x[32] , int n , bool output[32]){
     for(int i = 0; i < 32; i++){
@@ -250,6 +280,117 @@ void crypto::permutation(bool *x, bool *output) {
     }
 }
 
+void crypto::SHA256(int length, bool output[256]) {
+
+    bool H0[32], H1[32], H2[32], H3[32], H4[32], H5[32], H6[32], H7[32];
+    bool K[64][32];
+
+    for (int k = 0; k < length/512 ; k++) {
+
+
+        bool block[512];
+        for (int i = 0; i < 512; i++) {
+            block[i] = input[i + k*512];
+        }
+
+        bool wArray[64][32];
+        w(block, wArray);
+
+        bool A[32], B[32], C[32], D[32], E[32], F[32], G[32], H[32];
+
+        toBinary32(0x6a09e667, H0);
+        toBinary32(0xbb67ae85, H1);
+        toBinary32(0x3c6ef372, H2);
+        toBinary32(0xa54ff53a, H3);
+        toBinary32(0x510e527f, H4);
+        toBinary32(0x9b05688c, H5);
+        toBinary32(0x1f83d9ab, H6);
+        toBinary32(0x5be0cd19, H7);
+
+        for (int i = 0; i < 64; i++) {
+            bool T1[32], T2[32];
+            for (int j = 0; j < 32; j++) {
+                A[i] = H0[i];
+                B[i] = H1[i];
+                C[i] = H2[i];
+                D[i] = H3[i];
+                E[i] = H4[i];
+                F[i] = H5[i];
+                G[i] = H6[i];
+                H[i] = H7[i];
+            }
+            bool sigma1e[32], Chefg[32];
+            sigma1(E, sigma1e);
+            Ch(E, F, G, Chefg);
+            add5(H, sigma1e, Chefg, K[i], wArray[i], T2);
+
+            bool sigma0a[32], Majabc[32], cPlusd[32], sigma2cPlusd[32];
+            add3(sigma0a, Majabc, sigma2cPlusd, T1);
+
+            for (int j = 0; j < 32; j++) {
+                H[i] = G[i];
+                F[i] = E[i];
+                D[i] = C[i];
+                B[i] = A[i];
+                G[i] = F[i];
+                C[i] = B[i];
+            }
+            add(D, T1, E);
+            bool T1_3[32];
+            add3(T1, T1, T1, T1_3);
+            sub(T1_3, T2, A);
+
+            bool H0_output[32], H1_output[32], H2_output[32], H3_output[32]
+            , H4_output[32], H5_output[32], H6_output[32], H7_output[32];
+            add(A, H0, H0_output);
+            add(B, H1, H1_output);
+            add(C, H2, H2_output);
+            add(D, H3, H3_output);
+            add(E, H4, H4_output);
+            add(F, H5, H5_output);
+            add(G, H6, H6_output);
+            add(H, H7, H7_output);
+
+            for (int j = 0; j < 32; j++) {
+                H0[i] = H0_output[i];
+                H1[i] = H1_output[i];
+                H2[i] = H2_output[i];
+                H3[i] = H3_output[i];
+                H4[i] = H4_output[i];
+                H5[i] = H5_output[i];
+                H6[i] = H6_output[i];
+                H7[i] = H7_output[i];
+            }
+        }
+    }
+
+    bool finalH[256];
+    for (int i = 0; i <32 ; i++) {
+        finalH[i] = H0[i];
+    }
+    for (int i = 32; i <64 ; i++) {
+        finalH[i] = H1[i];
+    }
+    for (int i = 64; i <96 ; i++) {
+        finalH[i] = H2[i];
+    }
+    for (int i = 96; i <128 ; i++) {
+        finalH[i] = H3[i];
+    }
+    for (int i = 128; i <160 ; i++) {
+        finalH[i] = H4[i];
+    }
+    for (int i = 160; i <192 ; i++) {
+        finalH[i] = H5[i];
+    }
+    for (int i = 192; i <224 ; i++) {
+        finalH[i] = H6[i];
+    }
+    for (int i = 224; i <256 ; i++) {
+        finalH[i] = H7[i];
+    }
+}
+
 void crypto::Ch(bool x[32], bool y[32], bool z[32], bool output[32]) {
     bool out1[32], out2[32], out3[32], yNot[32], xNot[32];
     aNd(x, y, out1);
@@ -293,7 +434,3 @@ void crypto::sigma2(bool *var, bool *output) {
     SHF(var, 5, out4);
     xOr4(out1, out2, out3, out4, output);
 }
-
-
-
-

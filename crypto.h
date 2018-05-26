@@ -21,7 +21,10 @@ public:
     void xOr(bool var1[32], bool var2[32], bool var3[32], bool output[32]);
     void xOr4(bool var1[32], bool var2[32], bool var3[32], bool var4[32], bool output[32]);
     void add(bool var1[32], bool var2[32] , bool output[32]);
+    void sub(bool var1[32], bool var2[32] , bool output[32]);
+    void add3(bool var1[32], bool var2[32],bool var3[32], bool output[32]);
     void add4(bool var1[32], bool var2[32],bool var3[32], bool var4[32] , bool output[32]);
+    void add5(bool var1[32], bool var2[32],bool var3[32], bool var4[32] , bool var5[32] , bool output[32]);
     void ROT(bool x[32] , int n , bool output[32]);
     void SHF(bool x[32] , int n , bool output[32]);
     void ro0(bool x[32] , bool output[32]);
@@ -35,6 +38,7 @@ public:
     void sigma0(bool var[32], bool output[32]);
     void sigma1(bool var[32], bool output[32]);
     void sigma2(bool var[32], bool output[32]);
+    void SHA256(int length , bool output[256]);
 };
 
 
