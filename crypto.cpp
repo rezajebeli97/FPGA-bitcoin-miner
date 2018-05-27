@@ -269,21 +269,24 @@ void crypto::w(bool x[512] , bool output[64][32]) {
 }
 
 void crypto::permutation(bool *x, bool *output) {
-    for (int i = 0; i < 7; i++) {
-        output[i] = x[32-i];
-    }
-    for (int i = 8; i < 15; i++) {
-        output[i] = x[i+8];
-    }
-    for (int i = 16; i < 31; i++) {
-        output[i] = x[32-i];
+//    for (int i = 0; i < 7; i++) {
+//        output[i] = x[31-i];
+//    }
+//    for (int i = 8; i < 15; i++) {
+//        output[i] = x[i+8];
+//    }
+//    for (int i = 16; i < 31; i++) {
+//        output[i] = x[31-i];
+//    }
+
+    for (int i = 0; i < 31; i++) {
+        output[i] = x[31-i];
     }
 }
 
 void crypto::SHA256(int length, bool output[256]) {
 
     bool H0[32], H1[32], H2[32], H3[32], H4[32], H5[32], H6[32], H7[32];
-    bool K[64][32];
 
     for (int k = 0; k < length/512 ; k++) {
 
@@ -325,6 +328,10 @@ void crypto::SHA256(int length, bool output[256]) {
             add5(H, sigma1e, Chefg, K[i], wArray[i], T2);
 
             bool sigma0a[32], Majabc[32], cPlusd[32], sigma2cPlusd[32];
+            sigma0(A , sigma0a);
+            Maj(A , B , C , Majabc);
+            add(C , D , cPlusd);
+            sigma2(cPlusd , sigma2cPlusd);
             add3(sigma0a, Majabc, sigma2cPlusd, T1);
 
             for (int j = 0; j < 32; j++) {
@@ -364,31 +371,31 @@ void crypto::SHA256(int length, bool output[256]) {
         }
     }
 
-    bool finalH[256];
     for (int i = 0; i <32 ; i++) {
-        finalH[i] = H0[i];
+        output[i] = H0[i];
     }
     for (int i = 32; i <64 ; i++) {
-        finalH[i] = H1[i];
+        output[i] = H1[i-32];
     }
     for (int i = 64; i <96 ; i++) {
-        finalH[i] = H2[i];
+        output[i] = H2[i-64];
     }
     for (int i = 96; i <128 ; i++) {
-        finalH[i] = H3[i];
+        output[i] = H3[i-96];
     }
     for (int i = 128; i <160 ; i++) {
-        finalH[i] = H4[i];
+        output[i] = H4[i-128];
     }
     for (int i = 160; i <192 ; i++) {
-        finalH[i] = H5[i];
+        output[i] = H5[i-160];
     }
     for (int i = 192; i <224 ; i++) {
-        finalH[i] = H6[i];
+        output[i] = H6[i-192];
     }
     for (int i = 224; i <256 ; i++) {
-        finalH[i] = H7[i];
+        output[i] = H7[i-224];
     }
+
 }
 
 void crypto::Ch(bool x[32], bool y[32], bool z[32], bool output[32]) {
