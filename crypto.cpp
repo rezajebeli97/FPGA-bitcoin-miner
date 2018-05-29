@@ -290,7 +290,6 @@ void crypto::SHA256(int length, bool output[256]) {
 
     for (int k = 0; k < length/512 ; k++) {
 
-
         bool block[512];
         for (int i = 0; i < 512; i++) {
             block[i] = input[i + k*512];
@@ -359,14 +358,14 @@ void crypto::SHA256(int length, bool output[256]) {
             add(H, H7, H7_output);
 
             for (int j = 0; j < 32; j++) {
-                H0[i] = H0_output[i];
-                H1[i] = H1_output[i];
-                H2[i] = H2_output[i];
-                H3[i] = H3_output[i];
-                H4[i] = H4_output[i];
-                H5[i] = H5_output[i];
-                H6[i] = H6_output[i];
-                H7[i] = H7_output[i];
+                H0[j] = H0_output[j];
+                H1[j] = H1_output[j];
+                H2[j] = H2_output[j];
+                H3[j] = H3_output[j];
+                H4[j] = H4_output[j];
+                H5[j] = H5_output[j];
+                H6[j] = H6_output[j];
+                H7[j] = H7_output[j];
             }
         }
     }

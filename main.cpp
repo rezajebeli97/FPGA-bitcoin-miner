@@ -32,7 +32,7 @@ int main() {
 //        cout << tmp2[i];
 //    }
     bool tmp[256];
-    crypto().SHA256(totalLength , tmp);
+    cryp.SHA256(totalLength , tmp);
     for (int i = 0; i < 256; i++) {
         cout<<tmp[i];
     }
