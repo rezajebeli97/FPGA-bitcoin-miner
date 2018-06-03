@@ -346,6 +346,7 @@ void crypto::SHA256(int length, bool output[256]) {
             Ch(E, F, G, Chefg);
             cout << "i:" << i << " -> H= " << printBinaryArray(H , 32) << " ,    sigma1e= " << printBinaryArray(sigma1e , 32) << " ,    Chefg= " << printBinaryArray(Chefg , 32) <<  " ,    K[i]= " << printBinaryArray(K[i] , 32) << " ,    wArray[i]= " << printBinaryArray(wArray[i] , 32) << endl;
             add5(H, sigma1e, Chefg, K[i], wArray[i], T2);
+            cout << "i:" << i << " -> T2= " << printBinaryArray(T2 , 32) << endl;
 
             bool sigma0a[32], Majabc[32], cPlusd[32], sigma2cPlusd[32];
             sigma0(A , sigma0a);

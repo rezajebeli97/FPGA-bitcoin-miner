@@ -24,13 +24,15 @@ int main() {
 //        cout << temp6[j];
 //    }
 
-//    bool tmp1[32] = {1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1};
+
+//    bool tmp1[32] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
 //    bool tmp2[32];
-//    crypto().ROT(tmp1 , 4 , tmp2);
+//    crypto().add5(tmp1 , tmp1 , tmp1 , tmp1, tmp1 , tmp2);
 //    for(int i = 0; i < 32; i++)
 //    {
 //        cout << tmp2[i];
 //    }
+//
 
     bool tmp[256];
     cryp.SHA256(totalLength , tmp);
