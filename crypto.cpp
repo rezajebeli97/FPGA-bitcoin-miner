@@ -269,24 +269,33 @@ void crypto::w(bool x[512] , bool output[64][32]) {
 }
 
 void crypto::permutation(bool *x, bool *output) {
-//    for (int i = 0; i < 7; i++) {
-//        output[i] = x[31-i];
-//    }
-//    for (int i = 8; i < 15; i++) {
-//        output[i] = x[i+8];
-//    }
-//    for (int i = 16; i < 31; i++) {
-//        output[i] = x[31-i];
-//    }
-
-    for (int i = 0; i < 31; i++) {
+    for (int i = 0; i < 7; i++) {
         output[i] = x[31-i];
     }
+    for (int i = 8; i < 15; i++) {
+        output[i] = x[i+8];
+    }
+    for (int i = 16; i < 31; i++) {
+        output[i] = x[31-i];
+    }
+
+//    for (int i = 0; i < 31; i++) {
+//        output[i] = x[31-i];
+//    }
 }
 
 void crypto::SHA256(int length, bool output[256]) {
 
     bool H0[32], H1[32], H2[32], H3[32], H4[32], H5[32], H6[32], H7[32];
+
+    toBinary32(0x6a09e667, H0);
+    toBinary32(0xbb67ae85, H1);
+    toBinary32(0x3c6ef372, H2);
+    toBinary32(0xa54ff53a, H3);
+    toBinary32(0x510e527f, H4);
+    toBinary32(0x9b05688c, H5);
+    toBinary32(0x1f83d9ab, H6);
+    toBinary32(0x5be0cd19, H7);
 
     for (int k = 0; k < length/512 ; k++) {
 
@@ -300,14 +309,7 @@ void crypto::SHA256(int length, bool output[256]) {
 
         bool A[32], B[32], C[32], D[32], E[32], F[32], G[32], H[32];
 
-        toBinary32(0x6a09e667, H0);
-        toBinary32(0xbb67ae85, H1);
-        toBinary32(0x3c6ef372, H2);
-        toBinary32(0xa54ff53a, H3);
-        toBinary32(0x510e527f, H4);
-        toBinary32(0x9b05688c, H5);
-        toBinary32(0x1f83d9ab, H6);
-        toBinary32(0x5be0cd19, H7);
+
 
         for (int i = 0; i < 64; i++) {
             bool T1[32], T2[32];
