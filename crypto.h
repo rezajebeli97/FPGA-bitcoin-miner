@@ -39,6 +39,7 @@ public:
     void sigma1(bool var[32], bool output[32]);
     void sigma2(bool var[32], bool output[32]);
     void SHA256(int length , bool output[256]);
+    string printBinaryArray(bool* inp , int size);
 };
 
 

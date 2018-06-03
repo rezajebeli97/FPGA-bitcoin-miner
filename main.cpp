@@ -31,8 +31,10 @@ int main() {
 //    {
 //        cout << tmp2[i];
 //    }
+
     bool tmp[256];
     cryp.SHA256(totalLength , tmp);
+    cout << endl << endl;
     for (int i = 0; i < 256; i++) {
         cout<<tmp[i];
     }

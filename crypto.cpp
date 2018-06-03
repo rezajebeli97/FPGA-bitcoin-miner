@@ -198,10 +198,10 @@ void crypto::add4(bool *var1, bool *var2, bool *var3, bool *var4 , bool output[3
 
 void crypto::add5(bool *var1, bool *var2, bool *var3, bool *var4, bool *var5, bool *output) {
     bool tmp1[32];
-    add(var1 , var2 , tmp1);
     bool tmp2[32];
-    add(tmp1 , var3 , tmp2);
     bool tmp3[32];
+    add(var1 , var2 , tmp1);
+    add(tmp1 , var3 , tmp2);
     add(tmp2 , var4 , tmp3);
     add(tmp3 , var5 , output);
     return;
@@ -268,14 +268,22 @@ void crypto::w(bool x[512] , bool output[64][32]) {
     return ;
 }
 
+string crypto:: printBinaryArray(bool* inp , int size){
+    string s = "";
+    for (int i = 0; i < size; ++i) {
+        cout << inp[i];
+    }
+    return s;
+}
+
 void crypto::permutation(bool *x, bool *output) {
-    for (int i = 0; i < 7; i++) {
+    for (int i = 0; i < 8; i++) {
         output[i] = x[31-i];
     }
-    for (int i = 8; i < 15; i++) {
+    for (int i = 8; i < 16; i++) {
         output[i] = x[i+8];
     }
-    for (int i = 16; i < 31; i++) {
+    for (int i = 16; i < 32; i++) {
         output[i] = x[31-i];
     }
 
@@ -307,25 +315,36 @@ void crypto::SHA256(int length, bool output[256]) {
         bool wArray[64][32];
         w(block, wArray);
 
+        for (int i = 0; i < 64; ++i) {
+            for (int l = 0; l < 32; ++l) {
+                cout << wArray[i][l];
+            }
+            cout << "\n";
+        }
+        cout << endl;
+
         bool A[32], B[32], C[32], D[32], E[32], F[32], G[32], H[32];
 
 
 
         for (int i = 0; i < 64; i++) {
+            cout << "i:" << i << " -> H0= " << printBinaryArray(H0 , 32) << " ,    H1= " << printBinaryArray(H1 , 32) <<" ,    H2= " << printBinaryArray(H2 , 32) <<" ,    H3= " << printBinaryArray(H3 , 32) <<" ,    H4= " << printBinaryArray(H4 , 32) <<" ,    H5= " << printBinaryArray(H5 , 32) <<endl;
+
             bool T1[32], T2[32];
             for (int j = 0; j < 32; j++) {
-                A[i] = H0[i];
-                B[i] = H1[i];
-                C[i] = H2[i];
-                D[i] = H3[i];
-                E[i] = H4[i];
-                F[i] = H5[i];
-                G[i] = H6[i];
-                H[i] = H7[i];
+                A[j] = H0[j];
+                B[j] = H1[j];
+                C[j] = H2[j];
+                D[j] = H3[j];
+                E[j] = H4[j];
+                F[j] = H5[j];
+                G[j] = H6[j];
+                H[j] = H7[j];
             }
             bool sigma1e[32], Chefg[32];
             sigma1(E, sigma1e);
             Ch(E, F, G, Chefg);
+            cout << "i:" << i << " -> H= " << printBinaryArray(H , 32) << " ,    sigma1e= " << printBinaryArray(sigma1e , 32) << " ,    Chefg= " << printBinaryArray(Chefg , 32) <<  " ,    K[i]= " << printBinaryArray(K[i] , 32) << " ,    wArray[i]= " << printBinaryArray(wArray[i] , 32) << endl;
             add5(H, sigma1e, Chefg, K[i], wArray[i], T2);
 
             bool sigma0a[32], Majabc[32], cPlusd[32], sigma2cPlusd[32];
@@ -335,13 +354,16 @@ void crypto::SHA256(int length, bool output[256]) {
             sigma2(cPlusd , sigma2cPlusd);
             add3(sigma0a, Majabc, sigma2cPlusd, T1);
 
+            cout << "i:" << i << " -> T2= " << printBinaryArray(T2 , 32) << " ,    T1= " << printBinaryArray(T1 , 32) << " ,    E= " << printBinaryArray(E , 32) <<  " ,    sigma1e= " << printBinaryArray(sigma1e , 32) << " ,    Chefg= " << printBinaryArray(Chefg , 32) << " ,    sigma0a= " << printBinaryArray(sigma0a , 32) << " ,    Majabc= " << printBinaryArray(Majabc , 32) << " ,    sigma2cPlusd= " << printBinaryArray(sigma2cPlusd , 32) <<endl;
+
+
             for (int j = 0; j < 32; j++) {
-                H[i] = G[i];
-                F[i] = E[i];
-                D[i] = C[i];
-                B[i] = A[i];
-                G[i] = F[i];
-                C[i] = B[i];
+                H[j] = G[j];
+                F[j] = E[j];
+                D[j] = C[j];
+                B[j] = A[j];
+                G[j] = F[j];
+                C[j] = B[j];
             }
             add(D, T1, E);
             bool T1_3[32];
@@ -369,6 +391,7 @@ void crypto::SHA256(int length, bool output[256]) {
                 H6[j] = H6_output[j];
                 H7[j] = H7_output[j];
             }
+
         }
     }
 
