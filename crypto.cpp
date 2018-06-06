@@ -620,18 +620,18 @@ void crypto::mining(bool version[32], bool prev_block[256], bool merkel_root[256
     for (int i = 4*8; i < 36*8; ++i) {
         block_header[i] = prev_block[i-4*8];
     }
-//    for (int i = 36*8; i < 68*8; ++i) {
-//        block_header[i] = merkel_root[i-36*8];
-//    }
+    for (int i = 36*8; i < 68*8; ++i) {
+        block_header[i] = merkel_root[i-36*8];
+    }
     for (int i = 68*8; i < 72*8; ++i) {
         block_header[i] = timestamp[i-68*8];
     }
     for (int i = 72*8; i < 76*8; ++i) {
         block_header[i] = diff[i-72*8];
     }
-//    for (int i = 76*8; i < 80*8; ++i) {
-//        block_header[i] = nonce[i-76*8];
-//    }
+    for (int i = 76*8; i < 80*8; ++i) {
+        block_header[i] = nonce[i-76*8];
+    }
 
     bool hash[256] , target[256];
     hexToBin("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",hash);
@@ -639,12 +639,12 @@ void crypto::mining(bool version[32], bool prev_block[256], bool merkel_root[256
 
     int counter = 0;
     while(compare(hash , target)){
-        for (int i = 36*8; i < 68*8; ++i) {
-            block_header[i] = merkel_root[i-36*8];
-        }
-        for (int i = 76*8; i < 80*8; ++i) {
-            block_header[i] = nonce[i-76*8];
-        }
+//        for (int i = 36*8; i < 68*8; ++i) {
+//            block_header[i] = merkel_root[i-36*8];
+//        }
+//        for (int i = 76*8; i < 80*8; ++i) {
+//            block_header[i] = nonce[i-76*8];
+//        }
 
         bool new_block_header[672];
         for (int i = 0; i < 32 ; i++) {
@@ -668,12 +668,13 @@ void crypto::mining(bool version[32], bool prev_block[256], bool merkel_root[256
             nonce[i] = new_nonce[i];
         }
 
-        for (int i = 0; i < 256 ; ++i) {
-            merkel_root[i] = hash[i];
-        }
+//        for (int i = 0; i < 256 ; ++i) {
+//            merkel_root[i] = hash[i];
+//        }
 
-        cout << "counter : " <<counter << endl;
+        cout << "counter : " <<counter << "hash: " << printBinaryArray(hash, 256) << endl;
         counter++;
     }
+    output = hash;
 
 }
