@@ -149,6 +149,15 @@ char crypto::toChar(bool *value) {
     return output;
 }
 
+bool crypto::compare(bool inp1[256], bool inp2[256]) {
+    for (int i = 0; i <256 ; ++i) {
+        if(inp1[i] > inp2[i]){
+            return true;
+        }
+    }
+    return false;
+}
+
 void crypto::xOr(bool *var1, bool *var2, bool *var3, bool output[32]) {
     for (int i = 0; i < 32; i++) {
         output[i] = var1[i] xor var2[i] xor var3[i];
@@ -332,20 +341,11 @@ void crypto::SHA256(int length, bool output[256]) {
         bool wArray[64][32];
         w(block, wArray);
 
-        for (int i = 0; i < 64; ++i) {
-            for (int l = 0; l < 32; ++l) {
-                cout << wArray[i][l];
-            }
-            cout << "\n";
-        }
-        cout << endl;
-
         bool A[32], B[32], C[32], D[32], E[32], F[32], G[32], H[32];
 
 
 
         for (int i = 0; i < 64; i++) {
-            cout << "i:" << i << " -> H0= " << printBinaryArray(H0 , 32) << " ,    H1= " << printBinaryArray(H1 , 32) <<" ,    H2= " << printBinaryArray(H2 , 32) <<" ,    H3= " << printBinaryArray(H3 , 32) <<" ,    H4= " << printBinaryArray(H4 , 32) <<" ,    H5= " << printBinaryArray(H5 , 32) <<endl;
 
             bool T1[32], T2[32];
             for (int j = 0; j < 32; j++) {
@@ -361,9 +361,7 @@ void crypto::SHA256(int length, bool output[256]) {
             bool sigma1e[32], Chefg[32];
             sigma1(E, sigma1e);
             Ch(E, F, G, Chefg);
-            cout << "i:" << i << " -> H= " << printBinaryArray(H , 32) << " ,    sigma1e= " << printBinaryArray(sigma1e , 32) << " ,    Chefg= " << printBinaryArray(Chefg , 32) <<  " ,    K[i]= " << printBinaryArray(K[i] , 32) << " ,    wArray[i]= " << printBinaryArray(wArray[i] , 32) << endl;
             add5(H, sigma1e, Chefg, K[i], wArray[i], T2);
-            cout << "i:" << i << " -> T2= " << printBinaryArray(T2 , 32) << endl;
 
             bool sigma0a[32], Majabc[32], cPlusd[32], sigma2cPlusd[32];
             sigma0(A , sigma0a);
@@ -371,8 +369,6 @@ void crypto::SHA256(int length, bool output[256]) {
             add(C , D , cPlusd);
             sigma2(cPlusd , sigma2cPlusd);
             add3(sigma0a, Majabc, sigma2cPlusd, T1);
-
-            cout << "i:" << i << " -> T2= " << printBinaryArray(T2 , 32) << " ,    T1= " << printBinaryArray(T1 , 32) << " ,    E= " << printBinaryArray(E , 32) <<  " ,    sigma1e= " << printBinaryArray(sigma1e , 32) << " ,    Chefg= " << printBinaryArray(Chefg , 32) << " ,    sigma0a= " << printBinaryArray(sigma0a , 32) << " ,    Majabc= " << printBinaryArray(Majabc , 32) << " ,    sigma2cPlusd= " << printBinaryArray(sigma2cPlusd , 32) <<endl;
 
 
             for (int j = 0; j < 32; j++) {
@@ -510,52 +506,174 @@ string crypto::binToHex(bool inp[4]) {
     }
 }
 
-bool *crypto::hexToBin(string hex) {
-    bool bin[4];
-//    switch (hex){
-//        case "0":   bin = {0,0,0,0};
-//            break;
-//        case "1":   bin = {0,0,0,0};
-//            break;
-//        case "2":   bin = {0,0,0,0};
-//            break;
-//        case "3":   bin = {0,0,0,0};
-//            break;
-//        case "4":   bin = {0,0,0,0};
-//            break;
-//        case "0":   bin = {0,0,0,0};
-//            break;
-//        case "0":   bin = {0,0,0,0};
-//            break;
-//        case "0":   bin = {0,0,0,0};
-//            break;
-//    }
+bool *crypto::hexToBin(string hex, bool *output) {
+    for (int i = 0; i < hex.length(); ++i) {
+        switch (hex.at(i)){
+            case '0':
+                output[i*4] = 0;
+                output[i*4 + 1] = 0;
+                output[i*4 + 2] = 0;
+                output[i*4 + 3] = 0;
+                break;
+            case '1':
+                output[i*4] = 0;
+                output[i*4 + 1] = 0;
+                output[i*4 + 2] = 0;
+                output[i*4 + 3] = 1;
+                break;
+            case '2':
+                output[i*4] = 0;
+                output[i*4 + 1] = 0;
+                output[i*4 + 2] = 1;
+                output[i*4 + 3] = 0;
+                break;
+            case '3':
+                output[i*4] = 0;
+                output[i*4 + 1] = 0;
+                output[i*4 + 2] = 1;
+                output[i*4 + 3] = 1;
+                break;
+            case '4':
+                output[i*4] = 0;
+                output[i*4 + 1] = 1;
+                output[i*4 + 2] = 0;
+                output[i*4 + 3] = 0;
+                break;
+            case '5':
+                output[i*4] = 0;
+                output[i*4 + 1] = 1;
+                output[i*4 + 2] = 0;
+                output[i*4 + 3] = 1;
+                break;
+            case '6':
+                output[i*4] = 0;
+                output[i*4 + 1] = 1;
+                output[i*4 + 2] = 1;
+                output[i*4 + 3] = 0;
+                break;
+            case '7':
+                output[i*4] = 0;
+                output[i*4 + 1] = 1;
+                output[i*4 + 2] = 1;
+                output[i*4 + 3] = 1;
+                break;
+            case '8':
+                output[i*4] = 1;
+                output[i*4 + 1] = 0;
+                output[i*4 + 2] = 0;
+                output[i*4 + 3] = 0;
+                break;
+            case '9':
+                output[i*4] = 1;
+                output[i*4 + 1] = 0;
+                output[i*4 + 2] = 0;
+                output[i*4 + 3] = 1;
+                break;
+            case 'a':
+                output[i*4] = 1;
+                output[i*4 + 1] = 0;
+                output[i*4 + 2] = 1;
+                output[i*4 + 3] = 0;
+                break;
+            case 'b':
+                output[i*4] = 1;
+                output[i*4 + 1] = 0;
+                output[i*4 + 2] = 1;
+                output[i*4 + 3] = 1;
+                break;
+            case 'c':
+                output[i*4] = 1;
+                output[i*4 + 1] = 1;
+                output[i*4 + 2] = 0;
+                output[i*4 + 3] = 0;
+                break;
+            case 'd':
+                output[i*4] = 1;
+                output[i*4 + 1] = 1;
+                output[i*4 + 2] = 0;
+                output[i*4 + 3] = 1;
+                break;
+            case 'e':
+                output[i*4] = 1;
+                output[i*4 + 1] = 1;
+                output[i*4 + 2] = 1;
+                output[i*4 + 3] = 0;
+                break;
+            case 'f':
+                output[i*4] = 1;
+                output[i*4 + 1] = 1;
+                output[i*4 + 2] = 1;
+                output[i*4 + 3] = 1;
+                break;
+        }
+    }
 }
 
 void crypto::mining(bool version[32], bool prev_block[256], bool merkel_root[256],bool timestamp[32], bool diff[32], bool output[256]) {
     bool block_header[640];
     bool nonce[32] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+
+
     for (int i = 0; i < 4*8; ++i) {
         block_header[i] = version[i];
     }
     for (int i = 4*8; i < 36*8; ++i) {
-        block_header[i] = prev_block[i];
+        block_header[i] = prev_block[i-4*8];
     }
-    for (int i = 36*8; i < 68*8; ++i) {
-        block_header[i] = merkel_root[i];
-    }
+//    for (int i = 36*8; i < 68*8; ++i) {
+//        block_header[i] = merkel_root[i-36*8];
+//    }
     for (int i = 68*8; i < 72*8; ++i) {
-        block_header[i] = timestamp[i];
+        block_header[i] = timestamp[i-68*8];
     }
     for (int i = 72*8; i < 76*8; ++i) {
-        block_header[i] = diff[i];
+        block_header[i] = diff[i-72*8];
     }
-    for (int i = 76*8; i < 80*8; ++i) {
-        block_header[i] = nonce[i];
-    }
+//    for (int i = 76*8; i < 80*8; ++i) {
+//        block_header[i] = nonce[i-76*8];
+//    }
 
+    bool hash[256] , target[256];
+    hexToBin("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",hash);
+    hexToBin("1010101010101010101010101010101010101010101010101010101010101010",target);
+
+    int counter = 0;
+    while(compare(hash , target)){
+        for (int i = 36*8; i < 68*8; ++i) {
+            block_header[i] = merkel_root[i-36*8];
+        }
+        for (int i = 76*8; i < 80*8; ++i) {
+            block_header[i] = nonce[i-76*8];
+        }
+
+        bool new_block_header[672];
+        for (int i = 0; i < 32 ; i++) {
+            new_block_header[i] = nonce[i];
+        }
+        for (int i = 32; i < 672 ; i++) {
+            new_block_header[i] = block_header[i-32];
+        }
+        int length1 = pars(new_block_header , 672);
+        bool result1[256];
+        SHA256(length1 , result1);
+
+        int length2 = pars(result1 , 256);
+        SHA256(length2 , hash);
+
+        bool one[32] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
+        bool new_nonce[32];
+        add(nonce , one , new_nonce);
+
+        for (int i = 0; i < 32; ++i) {
+            nonce[i] = new_nonce[i];
+        }
+
+        for (int i = 0; i < 256 ; ++i) {
+            merkel_root[i] = hash[i];
+        }
+
+        cout << "counter : " <<counter << endl;
+        counter++;
+    }
 
 }
-
-
-

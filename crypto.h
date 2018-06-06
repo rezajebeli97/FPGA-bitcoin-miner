@@ -21,6 +21,7 @@ public:
     char toChar(bool value[8]);
     int pars(string s);
     int pars(bool *var, int length);
+    bool compare(bool inp1[256], bool inp2[256]);
     void xOr(bool var1[32], bool var2[32], bool var3[32], bool output[32]);
     void xOr4(bool var1[32], bool var2[32], bool var3[32], bool var4[32], bool output[32]);
     void add(bool var1[32], bool var2[32] , bool output[32]);
@@ -44,8 +45,10 @@ public:
     void SHA256(int length , bool output[256]);
     string printBinaryArray(bool* inp , int size);
     string binToHex(bool inp[4]);
-    bool* hexToBin(string hex);
+    bool* hexToBin(string hex, bool *output);
     void mining(bool *version, bool *prev_block, bool *merkel_root, bool *timestamp, bool *diff, bool *output);
+
+
 };
 
 
