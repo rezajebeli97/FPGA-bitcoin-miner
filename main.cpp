@@ -4,6 +4,9 @@
 using namespace std;
 
 int main() {
+
+    bool temp [16] = {0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,1};
+    crypto().pars(temp, 16);
     string s = "";
     cin >> s;
     crypto cryp;

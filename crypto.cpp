@@ -132,6 +132,23 @@ int crypto::pars(string s) {
 
 }
 
+int crypto::pars(bool *var, int length) {
+    char str[length/8];
+    for (int i = 0; i < length/8; ++i) {
+        str[i] = toChar(var + i*8* sizeof(bool));
+    }
+    string s(str);
+    return pars(s);
+}
+
+char crypto::toChar(bool *value) {
+    char output = 0;
+    for (int i = 0; i < 8; ++i) {
+        output += value[i]*pow(2,(7-i));
+    }
+    return output;
+}
+
 void crypto::xOr(bool *var1, bool *var2, bool *var3, bool output[32]) {
     for (int i = 0; i < 32; i++) {
         output[i] = var1[i] xor var2[i] xor var3[i];
@@ -492,4 +509,53 @@ string crypto::binToHex(bool inp[4]) {
         return "f";
     }
 }
+
+bool *crypto::hexToBin(string hex) {
+    bool bin[4];
+//    switch (hex){
+//        case "0":   bin = {0,0,0,0};
+//            break;
+//        case "1":   bin = {0,0,0,0};
+//            break;
+//        case "2":   bin = {0,0,0,0};
+//            break;
+//        case "3":   bin = {0,0,0,0};
+//            break;
+//        case "4":   bin = {0,0,0,0};
+//            break;
+//        case "0":   bin = {0,0,0,0};
+//            break;
+//        case "0":   bin = {0,0,0,0};
+//            break;
+//        case "0":   bin = {0,0,0,0};
+//            break;
+//    }
+}
+
+void crypto::mining(bool version[32], bool prev_block[256], bool merkel_root[256],bool timestamp[32], bool diff[32], bool output[256]) {
+    bool block_header[640];
+    bool nonce[32] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    for (int i = 0; i < 4*8; ++i) {
+        block_header[i] = version[i];
+    }
+    for (int i = 4*8; i < 36*8; ++i) {
+        block_header[i] = prev_block[i];
+    }
+    for (int i = 36*8; i < 68*8; ++i) {
+        block_header[i] = merkel_root[i];
+    }
+    for (int i = 68*8; i < 72*8; ++i) {
+        block_header[i] = timestamp[i];
+    }
+    for (int i = 72*8; i < 76*8; ++i) {
+        block_header[i] = diff[i];
+    }
+    for (int i = 76*8; i < 80*8; ++i) {
+        block_header[i] = nonce[i];
+    }
+
+
+}
+
+
 

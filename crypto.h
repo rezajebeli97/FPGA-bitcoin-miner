@@ -6,6 +6,7 @@
 #define CLION_PROJECTS_CRYPTO_H
 
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
@@ -17,7 +18,9 @@ public:
     void toBinary(int value, bool output[8]);
     void toBinary32(int64_t value, bool output[32]);
     void toBinary64(int64_t value, bool output[64]);
+    char toChar(bool value[8]);
     int pars(string s);
+    int pars(bool *var, int length);
     void xOr(bool var1[32], bool var2[32], bool var3[32], bool output[32]);
     void xOr4(bool var1[32], bool var2[32], bool var3[32], bool var4[32], bool output[32]);
     void add(bool var1[32], bool var2[32] , bool output[32]);
@@ -41,6 +44,8 @@ public:
     void SHA256(int length , bool output[256]);
     string printBinaryArray(bool* inp , int size);
     string binToHex(bool inp[4]);
+    bool* hexToBin(string hex);
+    void mining(bool *version, bool *prev_block, bool *merkel_root, bool *timestamp, bool *diff, bool *output);
 };
 
 
