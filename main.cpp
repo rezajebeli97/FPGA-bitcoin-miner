@@ -9,6 +9,8 @@ int main() {
     crypto cryp;
     int totalLength = cryp.pars(s);
 
+
+
 //    for (int i = 0; i < totalLength; i++) {
 //        cout << cryp.input[i];
 //    }
@@ -37,8 +39,14 @@ int main() {
     bool tmp[256];
     cryp.SHA256(totalLength , tmp);
     cout << endl << endl;
-    for (int i = 0; i < 256; i++) {
-        cout<<tmp[i];
+    for (int i = 0; i < 64; i++) {
+        string hex = crypto().binToHex(tmp + i*4*sizeof(bool));
+        cout<<hex;
     }
+
+//    bool tmp1[4] = {1,1,0,1};
+//
+//    cout << crypto().binToHex(tmp1);
+
     return 0;
 }

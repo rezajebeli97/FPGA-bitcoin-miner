@@ -466,3 +466,30 @@ void crypto::sigma2(bool *var, bool *output) {
     SHF(var, 5, out4);
     xOr4(out1, out2, out3, out4, output);
 }
+
+string crypto::binToHex(bool inp[4]) {
+    int result = inp[0]*8 + inp[1]*4 + inp[2]*2 + inp[3];
+
+    if (result < 10){
+        return to_string(result);
+    }
+    else if (result == 10){
+        return "a";
+    }
+    else if (result == 11){
+        return "b";
+    }
+    else if (result == 12){
+        return "c";
+    }
+    else if (result == 13){
+        return "d";
+    }
+    else if (result == 14){
+        return "e";
+    }
+    else {
+        return "f";
+    }
+}
+
