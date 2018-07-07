@@ -74,7 +74,6 @@ crypto::crypto() {
     toBinary32(0xa4506ceb, K[61]);
     toBinary32(0xbe49a3f7, K[62]);
     toBinary32(0xc67178f2, K[63]);
-
 }
 
 void crypto::toBinary(int value, bool output[8]) {
@@ -306,8 +305,9 @@ void crypto::w(bool x[512] , bool output[64][32]) {
 
 string crypto:: printBinaryArray(bool* inp , int size){
     string s = "";
-    for (int i = 0; i < size; ++i) {
-        cout << inp[i];
+    for (int i = 0; i < size/4; ++i) {
+        string hex = crypto().binToHex(inp + i*4*sizeof(bool));
+        cout << hex;
     }
     cout << endl;
     return s;
@@ -354,25 +354,31 @@ void crypto::SHA256(int length, bool output[256]) {
 
         bool A[32], B[32], C[32], D[32], E[32], F[32], G[32], H[32];
 
+        for (int j = 0; j < 32; j++) {
+            A[j] = H0[j];
+            B[j] = H1[j];
+            C[j] = H2[j];
+            D[j] = H3[j];
+            E[j] = H4[j];
+            F[j] = H5[j];
+            G[j] = H6[j];
+            H[j] = H7[j];
+        }
+
+        bool T1[32], T2[32];
+        bool sigma1e[32], Chefg[32];
+        bool sigma0a[32], Majabc[32], cPlusd[32], sigma2cPlusd[32];
+
         for (int i = 0; i < 64; i++) {
 
-            bool T1[32], T2[32];
-            for (int j = 0; j < 32; j++) {
-                A[j] = H0[j];
-                B[j] = H1[j];
-                C[j] = H2[j];
-                D[j] = H3[j];
-                E[j] = H4[j];
-                F[j] = H5[j];
-                G[j] = H6[j];
-                H[j] = H7[j];
-            }
-            bool sigma1e[32], Chefg[32];
+
+
+
             sigma1(E, sigma1e);
             Ch(E, F, G, Chefg);
             add5(H, sigma1e, Chefg, K[i], wArray[i], T2);
 
-            bool sigma0a[32], Majabc[32], cPlusd[32], sigma2cPlusd[32];
+
             sigma0(A , sigma0a);
             Maj(A , B , C , Majabc);
             add(C , D , cPlusd);
@@ -393,28 +399,28 @@ void crypto::SHA256(int length, bool output[256]) {
             add3(T1, T1, T1, T1_3);
             sub(T1_3, T2, A);
 
-            bool H0_output[32], H1_output[32], H2_output[32], H3_output[32]
-            , H4_output[32], H5_output[32], H6_output[32], H7_output[32];
-            add(A, H0, H0_output);
-            add(B, H1, H1_output);
-            add(C, H2, H2_output);
-            add(D, H3, H3_output);
-            add(E, H4, H4_output);
-            add(F, H5, H5_output);
-            add(G, H6, H6_output);
-            add(H, H7, H7_output);
 
-            for (int j = 0; j < 32; j++) {
-                H0[j] = H0_output[j];
-                H1[j] = H1_output[j];
-                H2[j] = H2_output[j];
-                H3[j] = H3_output[j];
-                H4[j] = H4_output[j];
-                H5[j] = H5_output[j];
-                H6[j] = H6_output[j];
-                H7[j] = H7_output[j];
-            }
+        }
+        bool H0_output[32], H1_output[32], H2_output[32], H3_output[32]
+        , H4_output[32], H5_output[32], H6_output[32], H7_output[32];
+        add(A, H0, H0_output);
+        add(B, H1, H1_output);
+        add(C, H2, H2_output);
+        add(D, H3, H3_output);
+        add(E, H4, H4_output);
+        add(F, H5, H5_output);
+        add(G, H6, H6_output);
+        add(H, H7, H7_output);
 
+        for (int j = 0; j < 32; j++) {
+            H0[j] = H0_output[j];
+            H1[j] = H1_output[j];
+            H2[j] = H2_output[j];
+            H3[j] = H3_output[j];
+            H4[j] = H4_output[j];
+            H5[j] = H5_output[j];
+            H6[j] = H6_output[j];
+            H7[j] = H7_output[j];
         }
     }
 
