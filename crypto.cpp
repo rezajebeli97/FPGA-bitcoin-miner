@@ -285,12 +285,22 @@ void crypto::w(bool x[512] , bool output[64][32]) {
         ro1(output[i-1] , output1);
         ro0(output[i-12] , output2);
         add4(output1 , output[i-6] , output2 , output[i-15] , output[i]);
+    }
+
+
+    for (int i = 0; i < 64; i++) {
         bool output3[32];
         permutation(output[i] , output3);
         for (int j = 0; j < 32; j++) {
             output[i][j] = output3[j];
         }
     }
+
+//    for (int i = 0; i < 64; ++i) {
+//        cout << "w[" << i << "] = ";
+//        printBinaryArray(output[i] , 32);
+//    }
+
     return ;
 }
 
@@ -299,6 +309,7 @@ string crypto:: printBinaryArray(bool* inp , int size){
     for (int i = 0; i < size; ++i) {
         cout << inp[i];
     }
+    cout << endl;
     return s;
 }
 
@@ -342,8 +353,6 @@ void crypto::SHA256(int length, bool output[256]) {
         w(block, wArray);
 
         bool A[32], B[32], C[32], D[32], E[32], F[32], G[32], H[32];
-
-
 
         for (int i = 0; i < 64; i++) {
 
@@ -620,9 +629,9 @@ void crypto::mining(bool version[32], bool prev_block[256], bool merkel_root[256
     for (int i = 4*8; i < 36*8; ++i) {
         block_header[i] = prev_block[i-4*8];
     }
-//    for (int i = 36*8; i < 68*8; ++i) {
-//        block_header[i] = merkel_root[i-36*8];
-//    }
+    for (int i = 36*8; i < 68*8; ++i) {
+        block_header[i] = merkel_root[i-36*8];
+    }
     for (int i = 68*8; i < 72*8; ++i) {
         block_header[i] = timestamp[i-68*8];
     }
@@ -639,9 +648,7 @@ void crypto::mining(bool version[32], bool prev_block[256], bool merkel_root[256
 
     int counter = 0;
     while(compare(hash , target)){
-        for (int i = 36*8; i < 68*8; ++i) {
-            block_header[i] = merkel_root[i-36*8];
-        }
+
         for (int i = 76*8; i < 80*8; ++i) {
             block_header[i] = nonce[i-76*8];
         }
