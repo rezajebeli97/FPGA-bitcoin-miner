@@ -132,12 +132,25 @@ int crypto::pars(string s) {
 }
 
 int crypto::pars(bool *var, int length) {
-    char str[length/8];
-    for (int i = 0; i < length/8; ++i) {
-        str[i] = toChar(var + i*8* sizeof(bool));
+    for (int i = 0; i < length; ++i) {
+        input[i] = var[i];
     }
-    string s(str);
-    return pars(s);
+    int currentIndex = length;
+    int k = 448 - ((currentIndex + 1)%512);
+    if(k < 0)
+        k += 512;
+    input[currentIndex] = true;
+    currentIndex += k + 1;
+
+    bool temp [64];
+    toBinary64(length, temp);
+    for (int i = currentIndex; i < currentIndex + 64; i++) {
+        input[i] = temp[i - currentIndex];
+    }
+
+    int totalLength = currentIndex + 64;
+    return  totalLength;
+
 }
 
 char crypto::toChar(bool *value) {
@@ -152,6 +165,9 @@ bool crypto::compare(bool inp1[256], bool inp2[256]) {
     for (int i = 0; i <256 ; ++i) {
         if(inp1[i] > inp2[i]){
             return true;
+        }
+        else if(inp1[i] < inp2[i]){
+            return false;
         }
     }
     return false;
@@ -651,15 +667,10 @@ void crypto::mining(bool version[32], bool prev_block[256], bool merkel_root[256
     bool hash[256] , target[256];
     hexToBin("ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",hash);
     hexToBin("1010101010101010101010101010101010101010101010101010101010101010",target);
+//    hexToBin("00000000000002816E0000000000000000000000000000000000000000000000",target);
 
     int counter = 0;
     while(compare(hash , target)){
-//        for (int i = 36*8; i < 68*8; ++i) {
-//            block_header[i] = merkel_root[i-36*8];
-//        }
-//        for (int i = 76*8; i < 80*8; ++i) {
-//            block_header[i] = nonce[i-76*8];
-//        }
 
         bool new_block_header[672];
         for (int i = 0; i < 32 ; i++) {
@@ -668,12 +679,15 @@ void crypto::mining(bool version[32], bool prev_block[256], bool merkel_root[256
         for (int i = 32; i < 672 ; i++) {
             new_block_header[i] = block_header[i-32];
         }
-        int length1 = pars(new_block_header , 672);
-        bool result1[256];
-        SHA256(length1 , result1);
 
-        int length2 = pars(result1 , 256);
-        SHA256(length2 , hash);
+        crypto first_sha;
+        int length1 = first_sha.pars(new_block_header , 672);
+        bool result1[256];
+        first_sha.SHA256(length1 , result1);
+
+        crypto second_sha;
+        int length2 = second_sha.pars(result1 , 256);
+        second_sha.SHA256(length2 , hash);
 
         bool one[32] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1};
         bool new_nonce[32];
@@ -682,14 +696,12 @@ void crypto::mining(bool version[32], bool prev_block[256], bool merkel_root[256
         for (int i = 0; i < 32; ++i) {
             nonce[i] = new_nonce[i];
         }
-
-//        for (int i = 0; i < 256 ; ++i) {
-//            merkel_root[i] = hash[i];
-//        }
-
-        cout << "counter : " <<counter << "hash: " << printBinaryArray(hash, 256) << endl;
+        cout << counter << " hash: " << printBinaryArray(hash, 256);
         counter++;
     }
-    output = hash;
+
+    for (int j = 0; j < 256; ++j) {
+        output[j] = hash[j];
+    }
 
 }
