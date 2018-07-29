@@ -1,0 +1,3 @@
+/Users/rezajebeli97/Documents/CLion WorkSpace/FPGA-bitcoin-miner/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/Users/rezajebeli97/Documents/CLion WorkSpace/FPGA-bitcoin-miner/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/rezajebeli97/Documents/CLion WorkSpace/FPGA-bitcoin-miner/cmake-build-debug/CMakeFiles/clion_projects.dir
